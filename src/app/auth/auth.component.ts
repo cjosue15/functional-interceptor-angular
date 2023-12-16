@@ -70,7 +70,7 @@ export default class AuthComponent {
     };
 
     this.#authService.logIn(credentials).subscribe((value) => {
-      localStorage.setItem('token', value.token);
+      this.#authService.saveToken(value.token);
       this.#router.navigate(['/']);
     });
   }

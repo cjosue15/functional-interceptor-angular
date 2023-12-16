@@ -1,7 +1,11 @@
 import { Component, Signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ProductsService } from './data-access/products.service';
+import { Router } from '@angular/router';
+
 import { map } from 'rxjs';
+
+import { ProductsService } from './data-access/products.service';
+import { AuthService } from '../shared/data-access/auth.service';
 
 export interface Product {
   id: number;
@@ -25,6 +29,7 @@ export interface Product {
       <button
         type="button"
         class="bg-green-500 h-[48px] px-8 rounded text-white font-bold cursor-pointer hover:bg-green-600"
+        (click)="logOut()"
       >
         Log out
       </button>
@@ -42,9 +47,18 @@ export interface Product {
   styles: ``,
 })
 export default class ProductsComponent {
+  #authService = inject(AuthService);
+
+  #routerService = inject(Router);
+
   #productsService = inject(ProductsService);
 
   products: Signal<Product[]> = toSignal(
     this.#productsService.getProducts().pipe(map((res: any) => res.products)),
   );
+
+  logOut(): void {
+    this.#authService.logOut();
+    this.#routerService.navigate(['/auth']);
+  }
 }
